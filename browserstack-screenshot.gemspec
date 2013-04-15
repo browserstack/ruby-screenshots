@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'screenshots/version'
+require 'screenshot/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "browserstack-screenshots"
-  spec.version       = Browserstack::Screenshots::VERSION
+  spec.name          = "browserstack-screenshot"
+  spec.version       = Screenshot::VERSION
   spec.authors       = ["ahmed1490"]
   spec.email         = ["ahmed1490@gmail.com"]
   spec.description   = %q{Ruby API wrapper for Browserstack screenshots}
