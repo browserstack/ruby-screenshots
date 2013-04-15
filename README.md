@@ -54,9 +54,9 @@ settings =
 {
 	:url=>"www.google.com",
 	:callback_url=>"http://example.com/pingback_url",
-	:win_res=>"1024x768",
-	:mac_res=>"1920x1080",
-	:quality=>"compressed",
+	:win_res=>"1024x768",	#Options : "1024x768", "1280x1024"
+	:mac_res=>"1920x1080", 	#Options : "1024x768", "1280x960", "1280x1024", "1600x1200", "1920x1080"
+	:quality=>"compressed",	#Options : "compressed", "original"
 	:browsers=>[
 			{:os=>"Windows",:os_version=>"7",:browser=>"ie",:browser_version=>"8.0"},
 			{:os=>"Windows",:os_version=>"XP",:browser=>"ie",:browser_version=>"7.0"}

@@ -19,7 +19,7 @@ module Screenshot
     end
     
     def start_screenshots configHash={}
-      res = http_post_request :data => configHash.to_json
+      res = http_post_request :data => Yajl::Encoder.encode(configHash)
       responseJson = parse res
       responseJson[:job_id]
     end
@@ -49,10 +49,6 @@ module Screenshot
       uri = URI.parse uri if uri.is_a?String
       uri.path = uri.path + "/#{options[:extend_uri].to_s}" if options[:extend_uri].is_a?String
       req = Net::HTTP::Get.new uri.request_uri
-      puts "URI"
-      puts uri
-      puts "req"
-      puts req
       make_request req, options, uri
     end
 
