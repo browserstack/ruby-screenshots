@@ -1,4 +1,4 @@
-# Browserstack::Screenshots
+# BrowserStack Screenshots
 
 A ruby gem for working with [BrowserStack](http://browserstack.com/screenshots) through its [API](http://www.browserstack.com/screenshots/api).
 
@@ -6,7 +6,7 @@ A ruby gem for working with [BrowserStack](http://browserstack.com/screenshots) 
 
 Add this line to your application's Gemfile:
 
-    gem 'browserstack-screenshots'
+    gem 'browserstack-screenshot'
 
 And then execute:
 
@@ -14,14 +14,14 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install browserstack
+    $ gem install browserstack-screenshot
 
 ## Example of Use
 
 First, you probably want to require it:
 
 ``` ruby
-require 'browserstack'
+require 'screenshot'
 ```
 
 ### Creating Client
@@ -39,17 +39,29 @@ client = Browserstack::Screenshots::Client.new(settings)
 ###API
 
 ####Getting available os and browsers
-Fetches all available browsers. API info: [http://www.browserstack.com/screenshots/api#browser-list]
+Fetches all available browsers. [API info](http://www.browserstack.com/screenshots/api#browser-list)
 
 ``` ruby
 client.get_os_and_browsers #returns a hash
 ```
 
 ####Generating Screenshots
-Frame the config object according to the format given. API info: [http://www.browserstack.com/screenshots/api#job-ids]
-eg settings object:
+Frame the config object according to the format given. [Format info](http://www.browserstack.com/screenshots/api#job-ids)
+
+Eg settings object:
 ``` ruby
-settings = {:url=>"www.google.com",:callback_url=>"http://example.com/pingback_url",:win_res=>"1024x768",:mac_res=>"1920x1080",:quality=>"compressed",:browsers=>[{:os=>"Windows",:os_version=>"7",:browser=>"ie",:browser_version=>"8.0"},{:os=>"Windows",:os_version=>"XP",:browser=>"ie",:browser_version=>"7.0"}]}
+settings = 
+{
+	:url=>"www.google.com",
+	:callback_url=>"http://example.com/pingback_url",
+	:win_res=>"1024x768",
+	:mac_res=>"1920x1080",
+	:quality=>"compressed",
+	:browsers=>[
+			{:os=>"Windows",:os_version=>"7",:browser=>"ie",:browser_version=>"8.0"},
+			{:os=>"Windows",:os_version=>"XP",:browser=>"ie",:browser_version=>"7.0"}
+	]
+}
 ```
 `callback_url`, `win_res`, `mac_res` and `quality` being optional parameters.
 
@@ -59,7 +71,7 @@ A job id is returned when a valid request is made.
 job_id = client.start_screenshots settings
 ```
 
-####Checking the status of the job
+####Checking/Polling the status of the job
 Use this method to check if the job is complete. 
 ``` ruby
 client.job_complete? job_id	#returns `true` or `false`
@@ -67,7 +79,7 @@ client.job_complete? job_id	#returns `true` or `false`
 
 Or you can fetch the job state
 ``` ruby
-client.job_complete? job_id	#returns `queue` or `processing` or `done`
+client.job_state job_id	#returns `queue` or `processing` or `done`
 ```
 
 ## Contributing

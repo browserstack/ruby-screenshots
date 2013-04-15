@@ -47,7 +47,7 @@ module Screenshot
 
     def http_get_request options={}, uri=API
       uri = URI.parse uri if uri.is_a?String
-      uri.path = uri.path + "/#{options[:extend_uri].to_s}" if options[:extend_uri].present?
+      uri.path = uri.path + "/#{options[:extend_uri].to_s}" if options[:extend_uri].is_a?String
       req = Net::HTTP::Get.new uri.request_uri
       puts "URI"
       puts uri
@@ -59,7 +59,7 @@ module Screenshot
     def http_post_request options={}, uri=API
       uri = URI.parse uri if uri.is_a?String
       req = Net::HTTP::Post.new uri.request_uri, initheader = {'Content-Type' =>'application/json'}
-      req.set_form_data({"data" => options[:data]}) if options[:data].present?
+      req.set_form_data({"data" => options[:data]}) if options[:data].is_a?String
       make_request req, options, uri
     end
 
@@ -72,7 +72,7 @@ module Screenshot
     end
     
     def add_authentication options, req
-        if @authorization.present?
+        if @authorization.is_a?String
           req["Authorization"] = @authorization
           else
           req.basic_auth options[:username].to_s, options[:password].to_s
