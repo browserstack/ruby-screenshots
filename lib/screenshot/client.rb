@@ -6,7 +6,7 @@ module Screenshot
     
     def initialize(options={})
         options = symbolize_keys options
-        unless options[:username].present? && options[:password].present?
+        unless options[:username] && options[:password]
             raise "Expecting Parameters: username and password in the options Hash!"
         end
         authenticate options, AUTH_URI
