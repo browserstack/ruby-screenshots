@@ -18,23 +18,23 @@ module Screenshot
         parse res
     end
     
-    def start_screenshots configHash={}
+    def generate_screenshots configHash={}
       res = http_post_request :data => Yajl::Encoder.encode(configHash)
       responseJson = parse res
-      responseJson[:job_id]
+      request = responseJson[:job_id]
     end
 
-    def job_complete? job_id
-      (job_state job_id) == "done" ? true : false
+    def screenshots_done? job_id
+      (screenshots_status job_id) == "done" ? true : false
     end
 
-     def job_state job_id
+     def screenshots_status job_id
       res = http_get_request :extend_uri => "#{job_id}.json"
       responseJson = parse res
       responseJson[:state]
     end
 
-    def screenshot_result job_id
+    def screenshots job_id
       res = http_get_request :extend_uri => "#{job_id}.json"
       responseJson = parse res
       responseJson[:screenshots]

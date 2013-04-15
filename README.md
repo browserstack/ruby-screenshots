@@ -1,6 +1,6 @@
 # BrowserStack Screenshots
 
-A ruby gem for working with [BrowserStack](http://browserstack.com/screenshots) through its [API](http://www.browserstack.com/screenshots/api).
+A ruby gem for [BrowserStack](http://browserstack.com)'s [Screenshot](http://browserstack.com/screenshots) [API](http://www.browserstack.com/screenshots/api).
 
 ## Installation
 
@@ -50,14 +50,13 @@ Frame the config object according to the format given. [Format info](http://www.
 
 Eg settings object:
 ``` ruby
-settings = 
-{
-	:url=>"www.google.com",
-	:callback_url=>"http://example.com/pingback_url",
-	:win_res=>"1024x768",	#Options : "1024x768", "1280x1024"
-	:mac_res=>"1920x1080", 	#Options : "1024x768", "1280x960", "1280x1024", "1600x1200", "1920x1080"
-	:quality=>"compressed",	#Options : "compressed", "original"
-	:browsers=>[
+settings = {
+	:url => "www.google.com",
+	:callback_url => "http://example.com/pingback_url",
+	:win_res => "1024x768",	#Options : "1024x768", "1280x1024"
+	:mac_res => "1920x1080", 	#Options : "1024x768", "1280x960", "1280x1024", "1600x1200", "1920x1080"
+	:quality => "compressed",	#Options : "compressed", "original"
+	:browsers => [
 			{:os=>"Windows",:os_version=>"7",:browser=>"ie",:browser_version=>"8.0"},
 			{:os=>"Windows",:os_version=>"XP",:browser=>"ie",:browser_version=>"7.0"}
 	]
@@ -65,22 +64,30 @@ settings =
 ```
 `callback_url`, `win_res`, `mac_res` and `quality` being optional parameters.
 
-A job id is returned when a valid request is made.
+A request id is returned when a valid request is made.
 
 ``` ruby
-job_id = client.start_screenshots settings
+request_id = client.generate_screenshots settings
 ```
 
-####Checking/Polling the status of the job
-Use this method to check if the job is complete. 
+####Checking/Polling the status of the request
+Use this method to check if the requested screenshots are complete. 
 ``` ruby
-client.job_complete? job_id	#returns `true` or `false`
+client.screenshots_done? request_id	#returns `true` or `false`
 ```
 
-Or you can fetch the job state
+Or you can fetch the request state
 ``` ruby
-client.job_state job_id	#returns `queue` or `processing` or `done`
+client.screenshots_status request_id	#returns `queue` or `processing` or `done`
+
 ```
+
+####Fetching the response of the requested screenshots
+``` ruby
+client.screenshots request_id
+
+```
+
 
 ## Contributing
 
