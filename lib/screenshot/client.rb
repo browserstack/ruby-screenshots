@@ -1,7 +1,7 @@
 module Screenshot
 	class Client
           
-    API = "http://wtf.browserstack.com/screenshots"
+    API = "http://www.browserstack.com/screenshots"
     AUTH_URI = "http://api.browserstack.com/3"
     
     def initialize(options={})
