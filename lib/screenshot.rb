@@ -1,3 +1,4 @@
+require "base64"
 require "net/http"
 require "yajl"
 require "screenshot/client"

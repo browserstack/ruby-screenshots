@@ -8,13 +8,14 @@ module Screenshot
       unless options[:username] && options[:password]
         raise "Expecting Parameters: username and password in the options Hash!"
       end
+      @authentication = "Basic " + Base64.encode64("#{options[:username]}:#{options[:password]}").strip
       #authenticate options, AUTH_URI
       self
     end
 
     def get_os_and_browsers
-        res = http_get_request :extend_uri => "browsers.json"
-        parse res
+      res = http_get_request :extend_uri => "browsers.json"
+      parse res
     end
     
     def generate_screenshots configHash={}
@@ -45,16 +46,16 @@ module Screenshot
     end
 
     def http_get_request options={}, uri=API
-      uri = URI.parse uri if uri.is_a?String
-      uri.path = uri.path + "/#{options[:extend_uri].to_s}" if options[:extend_uri].is_a?String
+      uri = URI.parse uri if uri
+      uri.path = uri.path + "/#{options[:extend_uri].to_s}" if options[:extend_uri]
       req = Net::HTTP::Get.new uri.request_uri
       make_request req, options, uri
     end
 
     def http_post_request options={}, uri=API
-      uri = URI.parse uri if uri.is_a?String
+      uri = URI.parse uri if uri
       req = Net::HTTP::Post.new uri.request_uri, initheader = {'Content-Type' =>'application/json'}
-      req.body = options[:data] if options[:data].is_a?String
+      req.body = options[:data] if options[:data]
       make_request req, options, uri
     end
 
@@ -67,25 +68,20 @@ module Screenshot
     end
     
     def add_authentication options, req
-        if @authorization.is_a?String
-          req["Authorization"] = @authorization
-          else
-          req.basic_auth options[:username].to_s, options[:password].to_s
-          @authorization = req["Authorization"]
-        end
-        req
+      req["Authorization"] = @authentication
+      req
     end
 
     def http_response_code_check res
       case res.code.to_i
-        when 200
-          res
-        when 401
-          raise "401 Unauthorized : Authentication Failed!"
-        when 422
-          raise "Unprocessable entity."+"\n Response Body: "+res.body
-        else
-          raise "Unexpected Response Code : "+res.code+"\n Response Body: "+res.body
+      when 200
+        res
+      when 401
+        raise "401 Unauthorized : Authentication Failed!"
+      when 422
+        raise "Unprocessable entity."+"\n Response Body: "+res.body
+      else
+        raise "Unexpected Response Code : "+res.code+"\n Response Body: "+res.body
       end
     end
 
@@ -97,6 +93,6 @@ module Screenshot
     def symbolize_keys hash
       hash.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
     end
-          
+
   end #Client
 end #Screenshots
