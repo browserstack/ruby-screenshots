@@ -32,7 +32,7 @@ Creates a new client instance.
   * `:password`: The password for the BrowserStack account.
 
 ``` ruby
-settings = {:username: "foo", :password: "foobar"}
+settings = {:username => "foo", :password => "foobar"}
 client = Screenshot::Client.new(settings)
 ```
 
@@ -42,7 +42,7 @@ client = Screenshot::Client.new(settings)
 Fetches all available browsers. [API info](http://www.browserstack.com/screenshots/api#browser-list)
 
 ``` ruby
-client.get_os_and_browsers #returns a hash
+client.get_os_and_browsers 	#returns a hash
 ```
 
 ####Generating Screenshots
@@ -53,7 +53,7 @@ Eg settings object:
 settings = {
 	:url => "www.google.com",
 	:callback_url => "http://example.com/pingback_url",
-	:win_res => "1024x768",	#Options : "1024x768", "1280x1024"
+	:win_res => "1024x768",		#Options : "1024x768", "1280x1024"
 	:mac_res => "1920x1080", 	#Options : "1024x768", "1280x960", "1280x1024", "1600x1200", "1920x1080"
 	:quality => "compressed",	#Options : "compressed", "original"
 	:browsers => [
@@ -79,13 +79,11 @@ client.screenshots_done? request_id	#returns `true` or `false`
 Or you can fetch the request state
 ``` ruby
 client.screenshots_status request_id	#returns `queue` or `processing` or `done`
-
 ```
 
 ####Fetching the response of the requested screenshots
 ``` ruby
 client.screenshots request_id
-
 ```
 
 
