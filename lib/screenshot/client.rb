@@ -1,16 +1,15 @@
 module Screenshot
 	class Client
           
-    API = "http://www.browserstack.com/screenshots"
-    AUTH_URI = "http://api.browserstack.com/3"
+    API = "http://wtf.browserstack.com/screenshots"
     
     def initialize(options={})
-        options = symbolize_keys options
-        unless options[:username] && options[:password]
-            raise "Expecting Parameters: username and password in the options Hash!"
-        end
-        authenticate options, AUTH_URI
-        self
+      options = symbolize_keys options
+      unless options[:username] && options[:password]
+        raise "Expecting Parameters: username and password in the options Hash!"
+      end
+      #authenticate options, AUTH_URI
+      self
     end
 
     def get_os_and_browsers
