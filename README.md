@@ -33,7 +33,7 @@ Creates a new client instance.
 
 ``` ruby
 settings = {:username: "foo", :password: "foobar"}
-client = Browserstack::Screenshots::Client.new(settings)
+client = Screenshot::Client.new(settings)
 ```
 
 ###API
