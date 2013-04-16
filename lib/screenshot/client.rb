@@ -1,7 +1,7 @@
 module Screenshot
 	class Client
           
-    API = "http://www.browserstack.com/screenshots"
+    API = "http://wtf.browserstack.com/screenshots"
     AUTH_URI = "http://api.browserstack.com/3"
     
     def initialize(options={})
@@ -55,7 +55,7 @@ module Screenshot
     def http_post_request options={}, uri=API
       uri = URI.parse uri if uri.is_a?String
       req = Net::HTTP::Post.new uri.request_uri, initheader = {'Content-Type' =>'application/json'}
-      req.set_form_data({"data" => options[:data]}) if options[:data].is_a?String
+      req.body = options[:data] if options[:data].is_a?String
       make_request req, options, uri
     end
 
@@ -84,9 +84,9 @@ module Screenshot
         when 401
           raise "401 Unauthorized : Authentication Failed!"
         when 422
-          raise "Unprocessable entity."
+          raise "Unprocessable entity."+"\n Response Body: "+res.body
         else
-          raise "Unexpected Response Code : "+res.code
+          raise "Unexpected Response Code : "+res.code+"\n Response Body: "+res.body
       end
     end
 
