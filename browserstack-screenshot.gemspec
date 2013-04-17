@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = Screenshot::VERSION
   spec.authors       = ["ahmed1490"]
   spec.email         = ["ahmed1490@gmail.com"]
-  spec.description   = %q{Ruby API wrapper for Browserstack screenshots}
+  spec.description   = %q{Ruby wrapper for Browserstack screenshots API}
   spec.summary       = %q{Get screenshots from live browsers using this gem}
   spec.homepage      = "http:www.browserstack.com/screenshots"
   spec.license       = ""
