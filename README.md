@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Example of Use
 
-First, you probably want to require it:
+First, you need to require the screenshot gem:
 
 ``` ruby
 require 'screenshot'
@@ -66,7 +66,7 @@ params = {
 `callback_url`, `win_res`, `mac_res`, `quality` and `tunnel` being optional parameters.
 
 #####For testing Local/Internal Server setup
-* First setup local tunnel using the command line method as mention [here](http://www.browserstack.com/local-testing#setup)
+* First setup local tunnel using the command line method as mentioned [here](http://www.browserstack.com/local-testing#setup)
 * Pass `:tunnel => true` in the params object
 
 
