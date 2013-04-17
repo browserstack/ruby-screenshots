@@ -1,7 +1,7 @@
 module Screenshot
 	class Client
           
-    API = "http://browserstack.com/screenshots"
+    API = "http://www.browserstack.com/screenshots"
     
     def initialize(options={})
       options = symbolize_keys options
@@ -62,9 +62,6 @@ module Screenshot
     def make_request req, options={}, uri=API
       conn = Net::HTTP.new uri.host, uri.port
       add_authentication options, req
-      puts "uri"
-      puts uri.inspect
-      
       res = conn.request req
       http_response_code_check res
       res
