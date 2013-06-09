@@ -77,11 +77,11 @@ module Screenshot
       when 200
         res
       when 401
-        raise "401 Unauthorized : Authentication Failed!"
+        raise AuthenticationError, {:code => res.code, :body => parse(res)}
       when 422
-        raise "Unprocessable entity."+"\n Response Body: "+res.body
+        raise InvalidRequestError, {:code => res.code, :body => parse(res)}
       else
-        raise "Unexpected Response Code : "+res.code+"\n Response Body: "+res.body
+        raise UnexpectedError, {:code => res.code, :body => parse(res)}
       end
     end
 
@@ -95,4 +95,14 @@ module Screenshot
     end
 
   end #Client
+  
+  class AuthenticationError < StandardError  
+  end 
+
+  class InvalidRequestError < StandardError  
+  end 
+  
+  class UnexpectedError < StandardError  
+  end
+  
 end #Screenshots
