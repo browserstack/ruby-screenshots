@@ -77,11 +77,11 @@ module Screenshot
       when 200
         res
       when 401
-        raise AuthenticationError, {:code => res.code, :body => parse(res)}
+        raise AuthenticationError, {:code => res.code, :body => parse(res)}.to_json
       when 422
-        raise InvalidRequestError, {:code => res.code, :body => parse(res)}
+        raise InvalidRequestError, {:code => res.code, :body => parse(res)}.to_json
       else
-        raise UnexpectedError, {:code => res.code, :body => parse(res)}
+        raise UnexpectedError, {:code => res.code, :body => parse(res)}.to_json
       end
     end
 
