@@ -77,17 +77,23 @@ module Screenshot
       when 200
         res
       when 401
-        raise AuthenticationError, {:code => res.code, :body => parse(res)}.to_json
+        raise AuthenticationError, encode({:code => res.code, :body => parse(res)})
+      when 403
+        raise ScreenshotNotAllowedError, encode({:code => res.code, :body => parse(res)})
       when 422
-        raise InvalidRequestError, {:code => res.code, :body => parse(res)}.to_json
+        raise InvalidRequestError, encode({:code => res.code, :body => parse(res)})
       else
-        raise UnexpectedError, {:code => res.code, :body => parse(res)}.to_json
+        raise UnexpectedError, encode({:code => res.code, :body => parse(res)})
       end
     end
 
     def parse(response)
       parser = Yajl::Parser.new(:symbolize_keys => true)
       parser.parse(response.body)
+    end
+
+    def encode(hash)
+      Yajl::Encoder.encode(hash)
     end
 
     def symbolize_keys hash
@@ -102,6 +108,9 @@ module Screenshot
   class InvalidRequestError < StandardError  
   end 
   
+  class ScreenshotNotAllowedError < StandardError
+  end
+
   class UnexpectedError < StandardError  
   end
   
