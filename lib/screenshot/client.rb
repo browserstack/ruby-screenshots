@@ -77,13 +77,13 @@ module Screenshot
       when 200
         res
       when 401
-        raise AuthenticationError, encode({:code => res.code, :body => parse(res)})
+        raise AuthenticationError, encode({:code => res.code, :body => res.body})
       when 403
-        raise ScreenshotNotAllowedError, encode({:code => res.code, :body => parse(res)})
+        raise ScreenshotNotAllowedError, encode({:code => res.code, :body => res.body})
       when 422
-        raise InvalidRequestError, encode({:code => res.code, :body => parse(res)})
+        raise InvalidRequestError, encode({:code => res.code, :body => res.body})
       else
-        raise UnexpectedError, encode({:code => res.code, :body => parse(res)})
+        raise UnexpectedError, encode({:code => res.code, :body => res.body})
       end
     end
 
