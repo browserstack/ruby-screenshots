@@ -56,6 +56,8 @@ params = {
 	:win_res => "1024x768",		#Options : "1024x768", "1280x1024"
 	:mac_res => "1920x1080", 	#Options : "1024x768", "1280x960", "1280x1024", "1600x1200", "1920x1080"
 	:quality => "compressed",	#Options : "compressed", "original"
+	:wait_time => 5,        #Options: 2, 5, 10, 15, 20, 60
+	:orientation => "portrait",  #Options: "portrait", "landscape"
 	:tunnel => false,
 	:browsers => [
 			{:os=>"Windows",:os_version=>"7",:browser=>"ie",:browser_version=>"8.0"},
@@ -63,7 +65,7 @@ params = {
 	]
 }
 ```
-`callback_url`, `win_res`, `mac_res`, `quality` and `tunnel` being optional parameters.
+`callback_url`, `win_res`, `mac_res`, `quality`, `wait_time`, `orientation` and `tunnel` being optional parameters.
 
 #####For testing Local/Internal Server setup
 * First setup local tunnel using the command line method as mentioned [here](http://www.browserstack.com/local-testing#setup)
