@@ -39,14 +39,14 @@ client = Screenshot::Client.new(settings)
 ###API
 
 ####Getting available os and browsers
-Fetches all available browsers. [API info](http://www.browserstack.com/screenshots/api#browser-list)
+Fetches all available browsers. [API info](http://www.browserstack.com/screenshots/api#list-os-browsers)
 
 ``` ruby
 client.get_os_and_browsers 	#returns a hash
 ```
 
 ####Generating Screenshots
-Frame the config object according to the format given. [Format info](http://www.browserstack.com/screenshots/api#job-ids)
+Frame the config object according to the format given. [Format info](http://www.browserstack.com/screenshots/api#generate-screenshots)
 
 Eg settings object:
 ``` ruby

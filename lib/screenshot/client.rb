@@ -62,6 +62,7 @@ module Screenshot
     def make_request req, options={}, uri=API
       conn = Net::HTTP.new uri.host, uri.port
       conn.use_ssl = uri.scheme == 'https'
+      conn.verify_mode = OpenSSL::SSL::VERIFY_NONE
       add_authentication options, req
       res = conn.request req
       http_response_code_check res
