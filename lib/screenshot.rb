@@ -1,5 +1,6 @@
 require "base64"
-require "net/http"
+require "net/https"
+require "openssl"
 require "yajl"
 require "screenshot/client"
 require "screenshot/version"
