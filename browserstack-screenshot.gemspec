@@ -6,8 +6,8 @@ require 'screenshot/version'
 Gem::Specification.new do |spec|
   spec.name          = "browserstack-screenshot"
   spec.version       = Screenshot::VERSION
-  spec.authors       = ["ahmed1490"]
-  spec.email         = ["ahmed1490@gmail.com"]
+  spec.authors       = ["ahmed1490", "utsavkesharwani"]
+  spec.email         = ["ahmed1490@gmail.com", "utsav.kesharwani@gmail.com"]
   spec.description   = %q{Ruby wrapper for Browserstack screenshots API}
   spec.summary       = %q{Get screenshots from live browsers using this gem}
   spec.homepage      = "https://github.com/browserstack/ruby-screenshots"
