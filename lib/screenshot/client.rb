@@ -12,15 +12,15 @@ module Screenshot
       self
     end
 
-    def get_os_and_browsers
+    def os_and_browsers
       res = http_get_request extend_uri: 'browsers.json'
       parse res
     end
 
-    def generate_screenshots(configHash = {})
-      res = http_post_request data: Yajl::Encoder.encode(configHash)
-      responseJson = parse res
-      request = responseJson[:job_id]
+    def generate_screenshots(config_hash = {})
+      res = http_post_request data: Yajl::Encoder.encode(config_hash)
+      response_json = parse res
+      response_json[:job_id]
     end
 
     def screenshots_done?(job_id)
@@ -29,14 +29,14 @@ module Screenshot
 
     def screenshots_status(job_id)
       res = http_get_request extend_uri: "#{job_id}.json"
-      responseJson = parse res
-      responseJson[:state]
-   end
+      response_json = parse res
+      response_json[:state]
+    end
 
     def screenshots(job_id)
       res = http_get_request extend_uri: "#{job_id}.json"
-      responseJson = parse res
-      responseJson[:screenshots]
+      response_json = parse res
+      response_json[:screenshots]
     end
 
     private
@@ -54,7 +54,7 @@ module Screenshot
 
     def http_post_request(options = {}, uri = API)
       uri = URI.parse uri if uri
-      req = Net::HTTP::Post.new uri.request_uri, initheader = { 'Content-Type' => 'application/json' }
+      req = Net::HTTP::Post.new uri.request_uri, 'Content-Type' => 'application/json'
       req.body = options[:data] if options[:data]
       make_request req, options, uri
     end
