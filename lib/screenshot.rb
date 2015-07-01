@@ -1,6 +1,6 @@
-require "base64"
-require "net/https"
-require "openssl"
-require "yajl"
-require "screenshot/client"
-require "screenshot/version"
+require 'base64'
+require 'net/https'
+require 'openssl'
+require 'yajl'
+require 'screenshot/client'
+require 'screenshot/version'
