@@ -60,8 +60,8 @@ params = {
   orientation: "portrait", # Options : "portrait", "landscape"
   tunnel: false,
   browsers: [
-    { os: "Windows", os_version: "7",  browser: "ie", browser_version: "8.0"},
-    { os: "Windows", os_version: "XP", browser: "ie", browser_version: "7.0"}
+    { os: "Windows", os_version: "7",  browser: "ie", browser_version: "8.0" },
+    { os: "Windows", os_version: "XP", browser: "ie", browser_version: "7.0" }
   ]
 }
 ```
@@ -87,7 +87,7 @@ client.screenshots_done?(request_id)  # returns `true` or `false`
 
 Or you can fetch the request state
 ``` ruby
-client.screenshots_status(request_id) # returns `queue` or `processing` or `done`
+client.screenshots_status(request_id) # returns `queue`, `all_queued`, `processing`, or `done`
 ```
 
 ####Fetching the response of the requested screenshots
