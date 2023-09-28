@@ -36,16 +36,16 @@ settings = {:username => "foo", :password => "foobar"}
 client = Screenshot::Client.new(settings)
 ```
 
-###API
+### API
 
-####Getting available os and browsers
+#### Getting available os and browsers
 Fetches all available browsers. [API info](http://www.browserstack.com/screenshots/api#list-os-browsers)
 
 ``` ruby
 client.get_os_and_browsers 	#returns a hash
 ```
 
-####Generating Screenshots
+#### Generating Screenshots
 Frame the config object according to the format given. [Format info](http://www.browserstack.com/screenshots/api#generate-screenshots)
 
 Eg settings object:
@@ -67,7 +67,7 @@ params = {
 ```
 `callback_url`, `win_res`, `mac_res`, `quality`, `wait_time`, `orientation` and `tunnel` being optional parameters.
 
-#####For testing Local/Internal Server setup
+##### For testing Local/Internal Server setup
 * First setup local tunnel using the command line method as mentioned [here](http://www.browserstack.com/local-testing#setup)
 * Pass `:tunnel => true` in the params object
 
@@ -79,7 +79,7 @@ A request id is returned when a valid request is made.
 request_id = client.generate_screenshots params
 ```
 
-####Checking/Polling the status of the request
+#### Checking/Polling the status of the request
 Use this method to check if the requested screenshots are complete. 
 ``` ruby
 client.screenshots_done? request_id	#returns `true` or `false`
@@ -90,7 +90,7 @@ Or you can fetch the request state
 client.screenshots_status request_id	#returns `queue` or `processing` or `done`
 ```
 
-####Fetching the response of the requested screenshots
+#### Fetching the response of the requested screenshots
 ``` ruby
 client.screenshots request_id
 ```
