@@ -116,7 +116,15 @@ module Screenshot
 
     def parse(response)
       parser = Yajl::Parser.new(:symbolize_keys => true)
-      result = parser.parse(response.body)
+      begin
+        result = parser.parse(response.body)
+      rescue Yajl::ParseError => e
+        # Wrap upstream parser errors (non-JSON 200 bodies — HTML
+        # maintenance pages, plain text, truncated payloads) so callers
+        # see a typed Screenshot::ParseError rather than a yajl-internal
+        # exception that doesn't match `rescue Screenshot::*` blocks.
+        raise ParseError, "BrowserStack API returned invalid JSON: #{e.message}"
+      end
       unless result.is_a?(Hash)
         raise ParseError, "Expected a JSON object from BrowserStack API, got #{result.class}"
       end
