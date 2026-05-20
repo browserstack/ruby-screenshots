@@ -1,0 +1,21 @@
+PATH
+  remote: .
+  specs:
+    browserstack-screenshot (0.0.3)
+      yajl-ruby (>= 1.4.3)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    rake (13.4.2)
+    yajl-ruby (1.4.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  browserstack-screenshot!
+  rake
+
+BUNDLED WITH
+   2.1.4
