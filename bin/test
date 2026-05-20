@@ -4,19 +4,39 @@
 # What it does:
 #   1. Sets BUNDLE_GEMFILE to Gemfile.test so rspec + webmock don't leak
 #      into the published gem's dependency tree.
-#   2. Installs test deps if missing.
-#   3. Runs rspec against spec/ (passes through any extra args).
+#   2. Pins PATH to the Ruby `ruby` currently resolves to, so machines
+#      with both rvm and rbenv installed don't end up using a different
+#      Ruby for `bundle exec` than for the `bundle` lookup. Mixing
+#      Rubies leads to "incompatible library version" errors on native
+#      extensions like yajl-ruby and bigdecimal.
+#   3. Installs test deps if missing.
+#   4. Runs rspec against spec/ (passes through any extra args).
 #
 # Usage:
-#   bin/test                 # run all specs
-#   bin/test spec/client_spec.rb -e 'job_id allowlist'   # focused
+#   bin/test                                              # all specs
+#   bin/test spec/client_spec.rb -e 'job_id allowlist'    # focused
 #   bin/test --format documentation                       # verbose
 
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
+# Resolve the bin dir of whichever Ruby is on PATH and pin it so
+# `bundle`, `bundle exec ruby`, and `rspec` all use the same interpreter.
+RUBY_BINDIR="$(ruby -e 'puts RbConfig::CONFIG["bindir"]')"
+export PATH="$RUBY_BINDIR:$PATH"
+
 export BUNDLE_GEMFILE="$PWD/Gemfile.test"
+
+# Ensure the bundler version recorded in Gemfile.test.lock is installed
+# for the current Ruby. Without this, machines that pick up a different
+# Ruby than the one that generated the lockfile fail with
+# "Could not find bundler (X) required by your Gemfile.lock".
+LOCKED_BUNDLER="$(awk '/^BUNDLED WITH$/{getline; gsub(/^ +/, ""); print; exit}' Gemfile.test.lock 2>/dev/null || true)"
+if [ -n "$LOCKED_BUNDLER" ] && ! gem list -i bundler -v "$LOCKED_BUNDLER" >/dev/null 2>&1; then
+  echo "==> Installing bundler $LOCKED_BUNDLER (required by Gemfile.test.lock) ..."
+  gem install bundler -v "$LOCKED_BUNDLER" --no-document --quiet
+fi
 
 if ! bundle check --quiet >/dev/null 2>&1; then
   echo "==> Installing test deps via Gemfile.test ..."
