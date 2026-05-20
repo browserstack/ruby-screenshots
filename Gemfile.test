@@ -1,0 +1,18 @@
+source 'https://rubygems.org'
+
+# LOCAL-ONLY test bundle — not part of the gem distribution. Lives in a
+# separate Gemfile so it never lands in a PR or a published .gem.
+#
+# Usage:
+#   BUNDLE_GEMFILE=Gemfile.test bundle install
+#   BUNDLE_GEMFILE=Gemfile.test bundle exec rspec spec/
+#
+# Or use the bin/test wrapper which handles the env var for you.
+
+gemspec
+
+group :test do
+  gem 'rspec',   '~> 3.13'
+  gem 'webmock', '~> 3.19'
+  gem 'rake',    '>= 13.0'
+end
