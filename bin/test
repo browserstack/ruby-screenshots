@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Local-only test runner for ruby-screenshots. Not part of the gem.
+#
+# What it does:
+#   1. Sets BUNDLE_GEMFILE to Gemfile.test so rspec + webmock don't leak
+#      into the published gem's dependency tree.
+#   2. Installs test deps if missing.
+#   3. Runs rspec against spec/ (passes through any extra args).
+#
+# Usage:
+#   bin/test                 # run all specs
+#   bin/test spec/client_spec.rb -e 'job_id allowlist'   # focused
+#   bin/test --format documentation                       # verbose
+
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+export BUNDLE_GEMFILE="$PWD/Gemfile.test"
+
+if ! bundle check --quiet >/dev/null 2>&1; then
+  echo "==> Installing test deps via Gemfile.test ..."
+  bundle install --quiet
+fi
+
+exec bundle exec rspec "${@:-spec/}"
