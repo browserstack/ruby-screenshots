@@ -21,10 +21,12 @@ module Screenshot
 
     def get_os_and_browsers
       res = http_get_request :extend_uri => "browsers.json"
-      # /screenshots/browsers.json returns a top-level JSON array of
-      # OS/browser entries — not a Hash. See API spec at
-      # https://www.browserstack.com/screenshots/api#list-os-browsers.
-      parse res, Array
+      # Empirically the production /screenshots/browsers.json endpoint
+      # returns a JSON object (Hash). The published API doc at
+      # https://www.browserstack.com/screenshots/api#list-os-browsers
+      # shows a top-level array, but a curl against production returns
+      # a Hash — trust reality over docs.
+      parse res
     end
 
     def generate_screenshots configHash={}

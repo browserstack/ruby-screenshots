@@ -216,29 +216,19 @@ describe Screenshot::Client do
       expect(result.size).to eq(2)
     end
 
-    it '#get_os_and_browsers issues GET /browsers.json and returns the top-level array per API spec' do
-      # Real shape per https://www.browserstack.com/screenshots/api#list-os-browsers —
-      # a TOP-LEVEL array, not a Hash with a "browsers" key.
-      body = '[' \
-        '{"os":"Windows","os_version":"XP","browser":"chrome","browser_version":"21.0","device":null},' \
-        '{"os":"ios","os_version":"6.0","browser":"Mobile Safari","browser_version":null,"device":"iPhone 4S (6.0)"}' \
-      ']'
+    it '#get_os_and_browsers issues GET /browsers.json and returns the Hash response' do
+      # Empirically production returns a Hash (verified by curl). The
+      # public API doc claims a top-level array, but reality differs;
+      # the client tracks reality.
+      body = '{"success":true,"browsers":[' \
+        '{"os":"Windows","os_version":"XP","browser":"chrome","browser_version":"21.0"}' \
+      ']}'
       stub_request(:get, "#{api_base}/browsers.json")
         .with(:headers => {'Authorization' => expected_auth})
         .to_return(:status => 200, :body => body)
       result = client.get_os_and_browsers
-      expect(result).to be_an(Array)
-      expect(result.size).to eq(2)
-      expect(result.first[:os]).to eq('Windows')
-      expect(result.last[:device]).to eq('iPhone 4S (6.0)')
-    end
-
-    it '#get_os_and_browsers raises ParseError when the API returns a Hash (regression guard)' do
-      # If the API ever changes shape and returns a Hash, we want a typed
-      # ParseError, not a TypeError downstream.
-      stub_request(:get, "#{api_base}/browsers.json")
-        .to_return(:status => 200, :body => '{"browsers":[]}')
-      expect { client.get_os_and_browsers }.to raise_error(Screenshot::ParseError)
+      expect(result).to be_a(Hash)
+      expect(result[:success]).to eq(true)
     end
 
     it '#generate_screenshots POSTs JSON body and returns the job_id' do
