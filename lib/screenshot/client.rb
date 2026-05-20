@@ -21,7 +21,10 @@ module Screenshot
 
     def get_os_and_browsers
       res = http_get_request :extend_uri => "browsers.json"
-      parse res
+      # /screenshots/browsers.json returns a top-level JSON array of
+      # OS/browser entries — not a Hash. See API spec at
+      # https://www.browserstack.com/screenshots/api#list-os-browsers.
+      parse res, Array
     end
 
     def generate_screenshots configHash={}
@@ -114,7 +117,7 @@ module Screenshot
       end
     end
 
-    def parse(response)
+    def parse(response, expected = Hash)
       parser = Yajl::Parser.new(:symbolize_keys => true)
       begin
         result = parser.parse(response.body)
@@ -125,8 +128,8 @@ module Screenshot
         # exception that doesn't match `rescue Screenshot::*` blocks.
         raise ParseError, "BrowserStack API returned invalid JSON: #{e.message}"
       end
-      unless result.is_a?(Hash)
-        raise ParseError, "Expected a JSON object from BrowserStack API, got #{result.class}"
+      unless result.is_a?(expected)
+        raise ParseError, "Expected #{expected} from BrowserStack API, got #{result.class}"
       end
       result
     end
