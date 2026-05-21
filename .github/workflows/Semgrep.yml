@@ -27,7 +27,10 @@ jobs:
 
     container:
       # A Docker image with Semgrep installed. Do not change this.
-      image: returntocorp/semgrep
+      # Pinned to a specific tag + immutable digest to prevent supply-chain
+      # tampering via floating tag mutation. Bump both the tag and the
+      # digest together when updating.
+      image: returntocorp/semgrep:1.163.0@sha256:7cad2bc2d1e44f87f0bf4be6d1fa23aa90fb72015bebc89fb91385d813987a03
 
     # Skip any PR created by dependabot to avoid permission issues:
     if: (github.actor != 'dependabot[bot]')

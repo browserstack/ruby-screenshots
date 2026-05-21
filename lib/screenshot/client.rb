@@ -1,8 +1,14 @@
 module Screenshot
 	class Client
-          
+
     API = "https://www.browserstack.com/screenshots"
-    
+
+    # Allowlist for job IDs accepted by screenshots_status/screenshots.
+    # Alphanumeric, underscore, and hyphen only — blocks path traversal,
+    # CRLF injection, and other URL-path tampering before the value is
+    # interpolated into the API request path.
+    JOB_ID_FORMAT = /\A[\w\-]{1,64}\z/
+
     def initialize(options={})
       options = symbolize_keys options
       unless options[:username] && options[:password]
@@ -15,9 +21,14 @@ module Screenshot
 
     def get_os_and_browsers
       res = http_get_request :extend_uri => "browsers.json"
+      # Empirically the production /screenshots/browsers.json endpoint
+      # returns a JSON object (Hash). The published API doc at
+      # https://www.browserstack.com/screenshots/api#list-os-browsers
+      # shows a top-level array, but a curl against production returns
+      # a Hash — trust reality over docs.
       parse res
     end
-    
+
     def generate_screenshots configHash={}
       res = http_post_request :data => Yajl::Encoder.encode(configHash)
       responseJson = parse res
@@ -29,18 +40,35 @@ module Screenshot
     end
 
      def screenshots_status job_id
+      validate_job_id! job_id
       res = http_get_request :extend_uri => "#{job_id}.json"
       responseJson = parse res
       responseJson[:state]
     end
 
     def screenshots job_id
+      validate_job_id! job_id
       res = http_get_request :extend_uri => "#{job_id}.json"
       responseJson = parse res
       responseJson[:screenshots]
     end
-    
+
+    # Redact @authentication when the receiver is serialised — APM/error
+    # trackers (Sentry, Bugsnag, Datadog) capture the receiver's inspect
+    # output alongside exception frames, which would otherwise leak the
+    # reversible Base64-encoded Basic Auth credential.
+    def inspect
+      "#<#{self.class.name}:0x#{(object_id << 1).to_s(16)} @authentication=[REDACTED]>"
+    end
+    alias_method :to_s, :inspect
+
     private
+    def validate_job_id!(job_id)
+      unless job_id.is_a?(String) && job_id =~ JOB_ID_FORMAT
+        raise ArgumentError, "Invalid job_id: must match #{JOB_ID_FORMAT.source}"
+      end
+    end
+
     def authenticate options, uri=API
       http_get_request options, uri
     end
@@ -70,7 +98,7 @@ module Screenshot
       http_response_code_check res
       res
     end
-    
+
     def add_authentication options, req
       req["Authorization"] = @authentication
       req
@@ -81,19 +109,31 @@ module Screenshot
       when 200
         res
       when 401
-        raise AuthenticationError, encode({:code => res.code, :body => res.body})
+        raise AuthenticationError.new("BrowserStack API responded #{res.code}", res.body)
       when 403
-        raise ScreenshotNotAllowedError, encode({:code => res.code, :body => res.body})
+        raise ScreenshotNotAllowedError.new("BrowserStack API responded #{res.code}", res.body)
       when 422
-        raise InvalidRequestError, encode({:code => res.code, :body => res.body})
+        raise InvalidRequestError.new("BrowserStack API responded #{res.code}", res.body)
       else
-        raise UnexpectedError, encode({:code => res.code, :body => res.body})
+        raise UnexpectedError.new("BrowserStack API responded #{res.code}", res.body)
       end
     end
 
-    def parse(response)
+    def parse(response, expected = Hash)
       parser = Yajl::Parser.new(:symbolize_keys => true)
-      parser.parse(response.body)
+      begin
+        result = parser.parse(response.body)
+      rescue Yajl::ParseError => e
+        # Wrap upstream parser errors (non-JSON 200 bodies — HTML
+        # maintenance pages, plain text, truncated payloads) so callers
+        # see a typed Screenshot::ParseError rather than a yajl-internal
+        # exception that doesn't match `rescue Screenshot::*` blocks.
+        raise ParseError, "BrowserStack API returned invalid JSON: #{e.message}"
+      end
+      unless result.is_a?(expected)
+        raise ParseError, "Expected #{expected} from BrowserStack API, got #{result.class}"
+      end
+      result
     end
 
     def encode(hash)
@@ -105,17 +145,33 @@ module Screenshot
     end
 
   end #Client
-  
-  class AuthenticationError < StandardError  
-  end 
 
-  class InvalidRequestError < StandardError  
-  end 
-  
-  class ScreenshotNotAllowedError < StandardError
+  # Base class for BrowserStack API errors. Carries the raw response body
+  # behind an opt-in `#body` reader so callers can inspect it deliberately;
+  # the default exception message is a fixed status-code string so that
+  # APM/log capture does not auto-ingest the body alongside the receiver's
+  # instance variables.
+  class APIError < StandardError
+    attr_reader :body
+    def initialize(message = nil, body = nil)
+      super(message)
+      @body = body
+    end
   end
 
-  class UnexpectedError < StandardError  
+  class AuthenticationError < APIError
   end
-  
+
+  class InvalidRequestError < APIError
+  end
+
+  class ScreenshotNotAllowedError < APIError
+  end
+
+  class UnexpectedError < APIError
+  end
+
+  class ParseError < StandardError
+  end
+
 end #Screenshots
